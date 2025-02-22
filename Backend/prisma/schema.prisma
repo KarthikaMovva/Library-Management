@@ -33,6 +33,8 @@ model Book {
   book_launch_date DateTime
   book_publisher String
   record_issuances Issuance[] @relation("BookToIssuance")
+  category Category @relation(fields: [book_cat_id], references: [cat_id])
+  collection Collection @relation(fields: [book_collection_id], references: [collection_id])
 }
 
 
