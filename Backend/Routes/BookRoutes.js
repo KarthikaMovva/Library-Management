@@ -1,25 +1,29 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
+// const auth=require('./Auth')
 
 const prisma = new PrismaClient();
 const BookRoutes = express.Router();
 
 BookRoutes.post('/book', async (req, res) => {
     try {
-        let { book_name, book_cat_id, book_collection_id, book_launch_date, book_publisher }=req.body;
-        const dateParts=book_launch_date.split('-');  
-        book_launch_date=new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+        let { book_name, book_cat_id, book_collection_id, book_launch_date, book_publisher } = req.body;
 
-        if (isNaN(book_launch_date.getTime())) {
-            return res.status(400).json({error: "Invalid date format. Use 'DD-MM-YYYY'."});
+        if (!book_name || !book_cat_id || !book_collection_id || !book_launch_date || !book_publisher) {
+            return res.status(400).json({ error: "All fields are required" });
         }
 
-        const book=await prisma.book.create({
+        const parsedDate = new Date(book_launch_date);
+        if (isNaN(parsedDate.getTime())) {
+            return res.status(400).json({ error: "Invalid date format" });
+        }
+
+        const book = await prisma.book.create({
             data: {
                 book_name,
                 book_cat_id,
                 book_collection_id,
-                book_launch_date,
+                book_launch_date: parsedDate,
                 book_publisher
             },
         });
@@ -33,38 +37,39 @@ BookRoutes.post('/book', async (req, res) => {
 
 BookRoutes.put('/book/:id', async (req, res) => {
     try {
-        const { book_name, book_cat_id, book_collection_id, book_launch_date, book_publisher } = req.body;
         const { id } = req.params;
+        const { book_name, book_cat_id, book_collection_id, book_launch_date, book_publisher } = req.body;
 
-        let newBookLaunchDate = null;
-        if (book_launch_date) {
-            const dateParts = book_launch_date.split('-');  
-            newBookLaunchDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+        const bookExists = await prisma.book.findUnique({
+            where: { book_id: parseInt(id) },
+        });
 
-            if (isNaN(newBookLaunchDate.getTime())) {
-                return res.status(400).json({ error: "Invalid date format. Use 'DD-MM-YYYY'." });
-            }
+        if (!bookExists) {
+            return res.status(404).json({ error: "Book not found" });
         }
 
-        const book = await prisma.book.update({
-            where: { book_id: parseInt(id) }, 
+        let parsedDate = book_launch_date ? new Date(book_launch_date) : null;
+        if (book_launch_date && isNaN(parsedDate.getTime())) {
+            return res.status(400).json({ error: "Invalid date format" });
+        }
+
+        const updatedBook = await prisma.book.update({
+            where: { book_id: parseInt(id) },
             data: {
                 book_name,
                 book_cat_id,
                 book_collection_id,
-                book_launch_date: newBookLaunchDate, 
+                book_launch_date: parsedDate,
                 book_publisher
             },
         });
 
-        res.status(200).json(book);  
+        res.status(200).json(updatedBook);
     } catch (error) {
         console.error('Error updating book:', error);
-        
         if (error.code === 'P2025') {
             return res.status(404).json({ error: 'Book not found' });
         }
-
         res.status(500).json({ error: 'Failed to update book' });
     }
 });
@@ -73,11 +78,12 @@ BookRoutes.get('/books', async (req, res) => {
     try {
         const books = await prisma.book.findMany();
         res.status(200).json(books);
-      } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
-  }
-  
+    } catch (error) {
+        console.error("Database Fetch Error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
+
 
 BookRoutes.get('/books/:id', async (req, res) => {
     try {
@@ -86,11 +92,15 @@ BookRoutes.get('/books/:id', async (req, res) => {
             where: { book_id: parseInt(id) }
         });
 
+        if (!book) {
+            return res.status(404).json({ error: "Book not found" });
+        }
+
         res.status(200).json(book);
-      } catch (error) {
-        res.status(500).json({ error: "Internal server error"});
-  }
-  
+    } catch (error) {
+        console.error("Error fetching book:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 
 module.exports = BookRoutes;

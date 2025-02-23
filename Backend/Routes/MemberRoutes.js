@@ -1,6 +1,7 @@
 const express=require('express');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient();
+// const auth=require('./Auth')
 
 const MemberRoutes=express.Router();
 

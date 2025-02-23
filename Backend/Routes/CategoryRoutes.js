@@ -1,5 +1,6 @@
 const express=require('express');
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client');
+// const auth=require('./Auth')
 const prisma = new PrismaClient();
 
 const CategoryRoutes=express.Router();
@@ -16,5 +17,15 @@ CategoryRoutes.post('/category',async (req,res)=>{
       res.status(500).json({ error: 'Failed to create collection'});
     }
   });
+
+  CategoryRoutes.get('/categories', async (req, res) => {
+    try {
+        const list = await prisma.category.findMany();
+        res.status(200).json(list);
+      } catch (error) {
+        res.status(500).json({ error: "Internal server error"});
+  }
+  
+});
 
   module.exports=CategoryRoutes;

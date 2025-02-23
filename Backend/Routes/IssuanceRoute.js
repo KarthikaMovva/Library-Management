@@ -1,10 +1,11 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
+// const auth=require('./Auth')
 
 const prisma = new PrismaClient();
 const IssuanceRoute = express.Router();
 
-IssuanceRoute.post('/issuance', async (req, res) => {
+IssuanceRoute.post('/issuance',async (req, res) => {
     try {
         let { book_id, issuance_member, issuance_date, issued_by, target_return_date, issuance_status } = req.body;
 
