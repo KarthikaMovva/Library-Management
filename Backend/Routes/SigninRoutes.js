@@ -1,7 +1,16 @@
 const express = require('express');
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client');
+const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { createClient } = require('@supabase/supabase-js');
+
+dotenv.config();
+
 const prisma = new PrismaClient();
-const UserRoutes=express.Router();
+const UserRoutes = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET;
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
 UserRoutes.post('/signup', async (req, res) => {
     try {
@@ -29,6 +38,7 @@ UserRoutes.post('/signup', async (req, res) => {
 
         res.status(201).json({ message: 'User registered', user: newUser });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -40,13 +50,13 @@ UserRoutes.post('/login', async (req, res) => {
         const user = await prisma.user.findUnique({ where: { email } });
 
         if (!user) {
-            return res.status(400).json({ error: 'Invalid credentials' });
+            return res.status(400).json({ error: 'User does not exist' });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.status(400).json({ error: 'Invalid credentials' });
+            return res.status(400).json({ error: 'Incorrect Password' });
         }
 
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -64,9 +74,9 @@ UserRoutes.post('/login', async (req, res) => {
 
         res.json({ message: 'Login successful', token });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Server error' });
     }
 });
 
-
-module.exports=UserRoutes;
+module.exports = UserRoutes;

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,10 +12,10 @@ model Book {
   book_name          String
   book_cat_id        Int
   book_collection_id Int
-  book_launch_date    DateTime
+  book_launch_date   DateTime
   book_publisher     String
-  category           Category   @relation(name: "BookCategory", fields: [book_cat_id], references: [cat_id])
-  collection         Collection @relation(name: "BookCollection", fields: [book_collection_id], references: [collection_id])
+  category           Category   @relation("BookCategory", fields: [book_cat_id], references: [cat_id])
+  collection         Collection @relation("BookCollection", fields: [book_collection_id], references: [collection_id])
   record_issuances   Issuance[] @relation("BookToIssuance")
 }
 
@@ -29,13 +23,13 @@ model Category {
   cat_id       Int    @id @default(autoincrement())
   cat_name     String
   sub_cat_name String
-  books        Book[] @relation(name: "BookCategory")
+  books        Book[] @relation("BookCategory")
 }
 
 model Collection {
   collection_id   Int    @id @default(autoincrement())
   collection_name String
-  books           Book[] @relation(name: "BookCollection")
+  books           Book[] @relation("BookCollection")
 }
 
 model Member {
@@ -50,13 +44,13 @@ model Member {
 model Issuance {
   issuance_id        Int      @id @default(autoincrement())
   book_id            Int
-  book               Book     @relation("BookToIssuance", fields: [book_id], references: [book_id])
   issuance_member    Int
-  member             Member   @relation("MemberToIssuance", fields: [issuance_member], references: [mem_id])
   issuance_date      DateTime
   issued_by          String
   target_return_date DateTime
   issuance_status    String
+  book               Book     @relation("BookToIssuance", fields: [book_id], references: [book_id])
+  member             Member   @relation("MemberToIssuance", fields: [issuance_member], references: [mem_id])
 }
 
 model Membership {
@@ -67,8 +61,8 @@ model Membership {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email    String  @unique
-  password String
+  email     String   @unique
+  password  String
   createdAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
 }

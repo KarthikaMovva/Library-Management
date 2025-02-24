@@ -1,13 +1,21 @@
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
 function SpecificBook() {
   const { id } = useParams();  
   const [data, setData] = useState(null);
+  const Next=useNavigate();
+  const token=localStorage.getItem('token');
 
   useEffect(() => {
     const fetchBook = async () => {
+      if (!token) {
+        console.log('No token found, redirecting to login...');
+        Next("/")
+        return;
+      }
+
       try {
         const response = await axios.get(`http://localhost:3001/books/${id}`);
         setData(response.data); 

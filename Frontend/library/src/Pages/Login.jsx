@@ -1,30 +1,34 @@
 import { useState } from 'react';
-// import supabase from "../Pages/SupabaseClient";
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-//   const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
-  const handleLogin = async () => {
-    // e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-    // const { data, error } = await supabase.auth.signInWithPassword({
-    //   email,
-    //   password,
-    // });
+    const response = await fetch('http://localhost:3001/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-    // if (error) {
-    //   alert(error.message);
-    // } else {
-    //   alert('Login successful!');
-    //   navigate('/book');
-    // }
+    const data = await response.json();
+    console.log(data)
+    if (response.ok) {
+      localStorage.setItem('token', data.token);
+      navigate('/book'); 
+    } else {
+      alert(data.error || 'Login failed');
+    }
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input 
@@ -33,6 +37,7 @@ function Login() {
           value={email} 
           onChange={(e) => setEmail(e.target.value)} 
           required 
+          className="input-field"
         />
         <input 
           type="password" 
@@ -40,6 +45,7 @@ function Login() {
           value={password} 
           onChange={(e) => setPassword(e.target.value)} 
           required 
+          className="input-field"
         />
         <button type="submit">Login</button>
       </form>

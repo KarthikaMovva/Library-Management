@@ -16,8 +16,16 @@ function UpdateIssuance() {
     const{id}=useParams();
     const Nextpage = useNavigate();
 
+    const token=localStorage.getItem('token')
+
     useEffect(() => {
         const fetchbooks = async () => {
+            if (!token) {
+                console.log('No token found, redirecting to login...');
+                Nextpage("/")
+                return;
+              }
+        
             try {
                 const response = await axios.get("http://localhost:3001/books");
                 setbook(response.data);

@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 // import supabase from "../Pages/SupabaseClient";
 import axios from "axios";
 
 function Members() {
     const [members, setMembers] = useState([]);
-
+    const Next=useNavigate();
+const token=localStorage.getItem('token');
 
     useEffect(() => {
+        if (!token) {
+            console.log('No token found, redirecting to login...');
+            Next("/")
+            return;
+          }
+    
         const memberslist = async () => {
             try {
                 const responded = await axios.get("http://localhost:3001/members");
@@ -19,9 +26,15 @@ function Members() {
         memberslist();
     }, []);
 
+    const Logout = () => {
+        localStorage.removeItem('token'); 
+        Next("/") 
+      };
+
     return (
         <div>
             <h1 className="title">Library Members</h1>
+            <button onClick={Logout}>Logout</button>
             <div className="table-container">
                 <table className="book-table">
                     <thead>

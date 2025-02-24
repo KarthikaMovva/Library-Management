@@ -15,7 +15,15 @@ function Issuance() {
     const [books, setbook] = useState([]);
     const Nextpage = useNavigate();
 
+    const token=localStorage.getItem('token');
+
     useEffect(() => {
+        if (!token) {
+            console.log('No token found, redirecting to login...');
+            Nextpage("/")
+            return;
+          }
+    
         const fetchbooks = async () => {
             try {
                 const response = await axios.get("http://localhost:3001/books");

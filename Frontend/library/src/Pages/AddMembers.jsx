@@ -9,8 +9,16 @@ function AddMembers(){
     const[email,setmail]=useState("");
     const Nextpage=useNavigate();
 
+    const token=localStorage.getItem('token');
+
     const AddMember = async (event) => {
         event.preventDefault();
+        if (!token) {
+            console.log('No token found, redirecting to login...');
+            Nextpage("/")
+            return;
+          }
+    
 
         if (!name || !number || !email) {
             console.log("All fields are required");

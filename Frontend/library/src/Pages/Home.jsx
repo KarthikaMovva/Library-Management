@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import "./pages.css"
 
 function Home() {
@@ -8,9 +8,18 @@ function Home() {
     const [dates, setdates] = useState([]);
     const [datepicked, setpicked] = useState("");
     const [target, settarget] = useState([]);
+    const Next=useNavigate();
+
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         const booklist = async () => {
+            if (!token) {
+                console.log('No token found, redirecting to login...');
+                Next("/")
+                return;
+              }
+        
             try {
                 const responded = await axios.get("http://localhost:3001/books");
                 setData(responded.data);
@@ -42,6 +51,12 @@ function Home() {
         settarget(details || null);
     }
 
+    const Logout = () => {
+        localStorage.removeItem('token'); 
+        Next("/") 
+      };
+      
+
     return (
         <div className="container">
             <div>
@@ -51,6 +66,7 @@ function Home() {
                 <Link to="/addIssuance">
                 <button>Add a Issuance</button>
                 </Link>
+                <button onClick={Logout}>Logout</button>
             </div>
             <h1 className="title">Available Books</h1>
             <div className="table-container">

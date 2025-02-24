@@ -18,8 +18,16 @@ function UpdateBook() {
     const navigate = useNavigate();
     const { id } = useParams();
 
+    const token=localStorage.getItem('token');
+
     useEffect(() => {
         const fetchCategories = async () => {
+            if (!token) {
+                console.log('No token found, redirecting to login...');
+                navigate("/")
+                return;
+              }
+        
             try {
                 const response = await axios.get("http://localhost:3001/categories");
                 setCategory(response.data);
