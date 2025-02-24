@@ -27,7 +27,7 @@ function AddMembers(){
         }
 
         try {
-            const updated = await axios.put(`http://localhost:3001/member/${id}`, {
+            const updated = await axios.put(`/member/${id}`, {
                 mem_name: name,
                 mem_phone: number,
                 mem_email: email,

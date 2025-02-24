@@ -29,7 +29,7 @@ function UpdateBook() {
               }
         
             try {
-                const response = await axios.get("http://localhost:3001/categories");
+                const response = await axios.get("/categories");
                 setCategory(response.data);
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -38,7 +38,7 @@ function UpdateBook() {
 
         const fetchCollections = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/collections");
+                const response = await axios.get("/collections");
                 setCollection(response.data);
             } catch (error) {
                 console.error("Error fetching collections:", error);
@@ -54,7 +54,7 @@ function UpdateBook() {
         
         const fetchBookDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/book/${id}`);
+                const response = await axios.get(`/book/${id}`);
                 const bookData = response.data;
 
                 setBookName(bookData.book_name);
@@ -92,7 +92,7 @@ function UpdateBook() {
         }
 
         try {
-            await axios.put(`http://localhost:3001/book/${id}`, {
+            await axios.put(`/book/${id}`, {
                 book_name: bookName,
                 book_cat_id: categoryId,
                 book_collection_id: collectionId,

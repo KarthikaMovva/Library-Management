@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link,useNavigate } from "react-router-dom";
-// import supabase from "../Pages/SupabaseClient";
 import axios from "axios";
 
 function Members() {
@@ -17,7 +16,7 @@ const token=localStorage.getItem('token');
     
         const memberslist = async () => {
             try {
-                const responded = await axios.get("http://localhost:3001/members");
+                const responded = await axios.get("/members");
                 setMembers(responded.data); 
             } catch (error) {
                 console.log("memberslist error in frontend:", error);

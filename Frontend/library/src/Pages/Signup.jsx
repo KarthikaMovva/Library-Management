@@ -9,7 +9,7 @@ function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:3001/signup', {
+    const response = await fetch('/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

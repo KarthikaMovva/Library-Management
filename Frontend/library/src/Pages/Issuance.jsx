@@ -26,7 +26,7 @@ function Issuance() {
     
         const fetchbooks = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/books");
+                const response = await axios.get("/books");
                 setbook(response.data);
             } catch (error) {
                 console.error("Error fetching books:", error);
@@ -38,7 +38,7 @@ function Issuance() {
     useEffect(() => {
         const fetchMembers = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/members");
+                const response = await axios.get("/members");
                 setmembers(response.data);
             } catch (error) {
                 console.error("Error fetching members:", error);
@@ -56,7 +56,7 @@ function Issuance() {
         }
 
         try {
-            const newIssuance = await axios.post("http://localhost:3001/issuance", {
+            const newIssuance = await axios.post("/issuance", {
                 book_id: bookid,
                 issuance_member: memid,
                 issuance_date: formatDate(issuancedate),

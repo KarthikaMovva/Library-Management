@@ -17,7 +17,7 @@ function SpecificBook() {
       }
 
       try {
-        const response = await axios.get(`http://localhost:3001/books/${id}`);
+        const response = await axios.get(`/books/${id}`);
         setData(response.data); 
       } catch (error) {
         console.error("Error fetching specific book details:", error);

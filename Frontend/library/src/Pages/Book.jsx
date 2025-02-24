@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import supabase from "../Pages/SupabaseClient";
 import axios from "axios";
 import "./pages.css";
 
@@ -14,7 +13,6 @@ function Book() {
     const [collectionId, setCollectionId] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedCollection, setSelectedCollection] = useState("");
-    // const [user, setUser] = useState(null);
     const [date, setDate] = useState("");
 
     const navigate = useNavigate();
@@ -29,7 +27,7 @@ const token=localStorage.getItem('token');
               }
         
             try {
-                const response = await axios.get("http://localhost:3001/categories");
+                const response = await axios.get("/categories");
                 setCategory(response.data);
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -41,7 +39,7 @@ const token=localStorage.getItem('token');
     useEffect(() => {
         const fetchCollections = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/collections");
+                const response = await axios.get("/collections");
                 setCollection(response.data);
             } catch (error) {
                 console.error("Error fetching collections:", error);
@@ -59,7 +57,7 @@ const token=localStorage.getItem('token');
         }
 
         try {
-            await axios.post(`http://localhost:3001/book`, {
+            await axios.post(`/book`, {
                 book_name: bookName,
                 book_cat_id: categoryId,
                 book_collection_id: collectionId,

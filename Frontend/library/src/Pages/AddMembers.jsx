@@ -26,7 +26,7 @@ function AddMembers(){
         }
 
         try {
-            const newMember = await axios.post("http://localhost:3001/member", {
+            const newMember = await axios.post("/member", {
                 mem_name: name,
                 mem_phone: number,
                 mem_email: email,

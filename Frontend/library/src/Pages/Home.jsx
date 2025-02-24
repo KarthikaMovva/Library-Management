@@ -21,7 +21,7 @@ function Home() {
               }
         
             try {
-                const responded = await axios.get("http://localhost:3001/books");
+                const responded = await axios.get("/books");
                 setData(responded.data);
             } catch (error) {
                 console.log("booklist error in frontend:", error);
@@ -34,7 +34,7 @@ function Home() {
     useEffect(() => {
         const AvailabelDates = async () => {
             try {
-                const responded = await axios.get("http://localhost:3001/issuances");
+                const responded = await axios.get("/issuances");
                 setdates(responded.data);
             } catch (error) {
                 console.log("Available dates error in frontend:", error);
